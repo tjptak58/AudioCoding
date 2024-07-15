@@ -7,6 +7,9 @@
   Synth for two
 */
 
+import {MultiVCO} from './MultiVCO.js'
+import {Chorus} from './Chorus.js'
+
 let player = 'synth' //synth or seq
 let isGlide = false
 
