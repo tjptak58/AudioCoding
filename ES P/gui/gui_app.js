@@ -5,7 +5,7 @@
 
         p.setup = function() {
             let divID = p.canvas.parentElement.id;
-            let div = document.getElementById(p.canvas.parentElement.id);
+            let div = document.getElementById(divID)
             //let div = document.getElementById('p5-container');
             p.initialize(div);
         };

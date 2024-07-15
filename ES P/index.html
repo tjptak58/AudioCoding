@@ -2,26 +2,55 @@
 <html lang="en">
   <head>
     <link rel="stylesheet" type="text/css" href="style.css">
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.js"></script>
     <script src=" https://cdn.jsdelivr.net/npm/tone@14.7.77/build/Tone.min.js"></script>
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js" integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOF7hr7BY6KG0+hVKLoEXMPUJw3ynWuhO" crossorigin="anonymous"></script>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Website</title>
 
+    <script src="collab/client.js"></script>
+    <link rel="stylesheet" type="text/css" href="collab/display.css">
+
     <script src="gui/gui_themes.js"></script>
     <script src="gui/gui_elements.js"></script>
     <script src="gui/gui_app.js"></script>
-    
+
 
   </head>
 
   <body>
-    <button id="startButton">Start/Stop</button>
+    <nav>
+      <button id="startButton">Enable DataDuo</button>
+      <span id="startStatus">Disabled</span>
+      <input type="text" id="roomName" name="roomName" placeholder="Enter room" style="margin-left: 20px;"></input>
+      <button id="joinRoomButton">Join Room</button>
+      <input type="text" id="newUserName" name="newUserName" placeholder="Enter new username" style="margin-left: 20px;"></input>
+      <button id="changeUserName">Change username</button>
+    </nav>
+
     <script src="sketch.js"></script>
     <script src="midi.js"></script>
+
     <main>
-      <div id="p5-container"></div>
+      <div id = "p5-container">
     </main>
+
+    <div class="collab-container">
+      <div class="collab-item" id="collab-controls"> </div>
+      <div class="collab-item" id="collab-events"> </div>
+      <div class="collab-item"> 
+        <div class="collab-chat-container">
+          <div id="collab-chat"></div>
+          <div class="collab-chat-input">
+            <input type="text" id="newChatMessage" name="newChatMessage" placeholder="New message"></input>
+            <button id="sendChatMessage">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="collab/display.js"></script>
   </body>
 </html>
