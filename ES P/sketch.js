@@ -7,11 +7,11 @@
   Synth for two
 */
 
-import {MultiVCO} from './MultiVCO.js'
-import {Chorus} from './Chorus.js'
-
 let player = 'synth' //synth or seq
 let isGlide = false
+
+let vco = new MultiVCO()
+let chor = new Chorus()
 
 let toneSig = new Tone.Signal()
 let tonePitchshift = new Tone.Multiply()

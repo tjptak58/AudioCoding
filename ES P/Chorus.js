@@ -14,7 +14,7 @@ properties:
 - 
 */
 
-export class Chorus{
+class Chorus{
     constructor(){
     //signal
     this.output = Tone.Multiply(1);

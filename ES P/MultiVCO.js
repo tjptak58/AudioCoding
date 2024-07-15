@@ -8,7 +8,7 @@
 import p5 from 'p5';
 import * as Tone from 'tone';
 
-export class MultiVCO{
+class MultiVCO{
     constructor(vcos = ['triangle','sawtooth','square'], pitchshift = [1,1,1]){
         this.numInputs = vcos.length
         this.frequency = new Tone.Signal(1)
