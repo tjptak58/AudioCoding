@@ -1,0 +1,49 @@
+let gui = new p5(sketch, Canvas1)
+
+//p.frame is the current timestep
+//p.x and p.y are persistent variables you can change
+/*
+p5{
+  p.x= p.x + Math.floor(p.frame/10)
+  let c = p.color('green');  
+    // Use fill() function to fill color 
+    p.fill(c); 
+    p.rect(10*p.frame/4%1000/3,20*p.frame/3%1000/10,30*p.frame/25%200/4,40*p.frame/65%500/5)
+}
+
+loop.humanize = .0
+*/
+
+p5{
+  let circleX = p.width/2;
+let circleY = p.height/2;
+  //console.log(p.height)
+let circleRadius = circleY;
+//
+let graphX = 50;
+let graphY = 300;
+let graphAmplitude = 50;
+let graphPeriod = 300;
+  let curFrame = p.frame/100
+  let angle = curFrame % 360;
+  p.noFill();
+  p.stroke(128);
+  p.strokeWeight(5);
+  p.circle(circleX, circleY, 2 * circleRadius);
+  p.line(circleX, circleY - circleRadius, circleX, circleY + circleRadius);
+  p.line(circleX - circleRadius, circleY, circleX + circleRadius, circleY);
+//
+  // Draw moving points
+//
+  let pointX = circleX + circleRadius * p.cos(angle);
+  let pointY = circleY - circleRadius * p.sin(angle);
+//
+  p.line(circleX, circleY, pointX, pointY);
+  p.noStroke();
+  p.fill('white');
+  p.circle(pointX, pointY, 10);
+  p.fill('orange');
+  p.circle(pointX, circleY, 10);
+  p.fill('red');
+  p.circle(circleX, pointY, 10);
+}

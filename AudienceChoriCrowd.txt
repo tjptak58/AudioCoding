@@ -1,0 +1,69 @@
+/*
+  MultiVCO audience choir
+  Crowd
+*/
+
+//set up collabhub
+const gui  = new p5(sketch, Canvas1)
+let ch = window.chClient
+ch.joinRoom('audienceChoir')
+
+//Note Choice
+let currentNote = ''
+let tonic = '';
+let degree = 0;
+
+ch.on('setTonic', (inc)=>{
+  tonic = inc.values
+})
+
+ch.on('curNote', (inc)=>{
+  currentNote = inc.values
+})
+
+ch.on('requestDegree', (inc)=>{
+  ch.control('setNote', degree, 'host')
+})
+
+//GUI
+let wave_radio = gui.Radio({
+  label:'waveform',
+  showLabel: false,
+  radioOptions: ['sine','sawtooth','square','triangle'],
+  callback: (x)=>{ ch.control('newVoice', x, 'host')},
+  size: 1.6,
+  x: 15, y:50,
+  horizontal: false
+})
+wave_radio.set('sine')
+
+let gain_fader = gui.Slider({
+  label:'gain',
+  x: 85, y: 13, size: 2.5,
+  callback: (x)=>{ch.control('setGain', x, 'host')},
+  min:0, max: 1, curve: 1,
+})
+//gain_fader.set(0.5)
+gain_fader.border = 5
+
+let up_toggle =  gui.Button({
+  label:'note up',
+  callback: (x)=>{ch.control('setNote', ++degree, 'host')},
+  x: 70, y:55,
+  size: 0.7
+})
+
+let down_toggle =  gui.Button({
+  label:'note down',
+  x: 35, y:55,
+  callback: (x)=>{ch.control('setNote', --degree, 'host')},
+  size: 0.7
+})
+
+p5 {
+  p.textSize(70);
+  p.text(currentNote, 335, 70, 100, 100);
+  p.textSize(20);
+  p.text("tonic:", 300, 130, 100, 80);
+  p.text(tonic, 370, 131, 100, 80);
+}

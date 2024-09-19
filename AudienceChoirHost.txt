@@ -1,0 +1,95 @@
+/*
+  MultiVCO audience choir
+  Host
+*/
+
+//Set up Theory
+let tonic = 60   //C
+let notes = ['C','C#/Db','D','D#/Eb','E','F','F#/Gb','G','G#/Ab','A','A#/Bb','B']
+let tonicIndex = 0
+let scale = [0,2,4,5,7,9,11]
+const scales = {
+  "major": [0,2,4,5,7,9,11],
+  "minor": [0,2,3,5,7,8,10],
+  "dorian": [0,2,3,5,7,9,10],
+  "melodic minor": [0,2,3,5,6,8,11]
+}
+let scaleName = "major"
+
+//Set up MulitVCO
+let sig = new Tone.Signal(Tone.Midi(tonic).toFrequency())
+let multi = new MultiVCO()
+sig.connect(multi.frequency)
+let out = new Tone.Multiply(0.05).toDestination()
+multi.connect(out)
+
+//set up collabhub
+const gui  = new p5(sketch, Canvas1)
+let ch = window.chClient
+ch.joinRoom('audienceChoir')
+ch.setUsername('host')
+
+//user management
+const users = {}
+const keys = {}
+
+//handler for a new user
+ch.on('newVoice', (inc)=>{
+  if (typeof inc.values == 'string') {
+    keys = Object.keys(users);
+    if (keys.indexOf(inc.from) !== -1) {
+      multi.removeVoice(keys.indexOf(inc.from))  //delete user and voice
+      delete users[inc.from]
+      multi.addVoice(inc.values) //add back with updated osc type
+    }
+    else {
+      multi.addVoice(inc.values)
+    }
+    users[inc.from] = inc.values
+  }
+  keys = Object.keys(users);
+  ch.control('setTonic', notes.at(parseInt(tonicIndex % 12)))
+})
+
+ch.on('setGain', (inc)=>{
+  multi.setGain(keys.indexOf(inc.from), inc.values)
+})
+
+ch.on('setNote', (inc)=>{
+  multi.setPitchshift(keys.indexOf(inc.from), (Tone.Midi(tonic + 12 * Math.floor((inc.values)/scale.length) + scale.at(parseInt(inc.values%scale.length))).toFrequency())/(Tone.Midi(tonic).toFrequency()))
+  ch.control('curNote', notes.at(parseInt((tonicIndex + scale.at(parseInt(inc.values%scale.length))) % 12)), inc.from)
+})
+
+let scale_radio = gui.Radio({
+  label:'scale',
+  showLabel: false,
+  radioOptions: ['major','minor','dorian','melodic minor'],
+  callback: (x)=>{ scale = scales[x]; for (let user in keys) ch.event('requestDegree', keys[user])},
+  size: 1.6,
+  x: 15, y:50,
+  horizontal: false
+})
+scale_radio.set('major')
+
+let up_toggle =  gui.Button({
+  label:'note up',
+  callback: (x)=>{ch.control('setTonic', notes.at(parseInt(++tonicIndex % 12))); sig.value = Tone.Midi(tonic + tonicIndex).toFrequency(); for (let user in keys) ch.event('requestDegree', keys[user]);},
+  x: 71, y:55,
+  size: 0.7
+})
+
+let down_toggle =  gui.Button({
+  label:'note down',
+  x: 34, y:55,
+  callback: (x)=>{ch.control('setTonic', notes.at(parseInt(--tonicIndex % 12))); sig.value = Tone.Midi(tonic + tonicIndex).toFrequency(); for (let user in keys) ch.event('requestDegree', keys[user]);},
+  size: 0.7
+})
+
+p5 {
+  p.textSize(70);
+  p.text(notes.at(parseInt(tonicIndex % 12)), 335, 80, 100, 100);
+  p.textSize(20);
+  p.text("tonic", 335, 135, 100, 80);
+}
+
+console.log(scale)

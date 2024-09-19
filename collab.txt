@@ -1,0 +1,67 @@
+// initiate gui
+let gui = new p5(sketch, Canvas1)
+
+// initiate collab-hub client 
+// (without gui)
+// const ch = window.chClient 
+// (with gui)
+const ch = new CollabHub('Canvas2')
+
+
+// custom control message
+// ch.control(handler, value)
+let val = 100
+ch.control('freq', val+=100)
+// control message handler
+ch.on('freq', (inc)=>{
+  // this will fire only for other users,
+  // not yourself! Try sending msgs in
+  // one window and handling in the other
+  console.log('Incoming Control Msg:', inc)
+})
+
+
+// custom event message (doesn't have value!)
+ch.event('helloWorld')
+// event message handler
+ch.on('helloWorld', (inc)=>{
+  // this will fire only for other users,
+  // not yourself! Try sending msgs in
+  // one window and handling in the other
+  console.log('Incoming Event Msg:', inc)
+})
+
+
+// link with a gui element
+gui.Fader({
+    link: 'level1',
+    label:'level',
+  })
+
+
+// custom collab-hub gui logic
+let a = 0.5;
+let fade = gui.Fader({
+    link: () => { 
+      // for example, send 1 - the control value
+      ch.control('custom', 1 - a) 
+    },
+    callback: (x) => { a = x},
+    label:'custom-logic',
+  })
+ch.on('custom', (inc)=>{
+  // forceSet function sets the value of the
+  // gui element without running the callback
+  // to prevent the collab-hub feedback loops
+  fade.forceSet(inc.value)
+})
+
+// sending targeted messages (change the user name below)
+// ch.event(header, target)
+// ch.control(header, value, target)
+ch.event('hiUser', 'User2142')
+ch.on('hiUser', (inc)=>{
+  console.log('hiUser targeted message received!', inc)
+})
+
+

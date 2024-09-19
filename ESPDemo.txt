@@ -1,0 +1,26 @@
+/*
+  Alt-Enter: Evaluate Line in Live Mode
+  Alt-Shift-Enter: Evaluate Block in Live Mode
+*/
+
+
+let out = new Tone.Multiply(0.05).toDestination()
+const gui  = new p5(sketch, Canvas1)
+let esp = new ESPSynth(gui)
+esp.initGui()
+
+esp.connect(out)
+
+setNoteOnHandler( (note,vel)=>{
+  esp.triggerAttack(note, vel)
+})
+
+setNoteOffHandler( (note, vel)=>{
+  esp.triggerRelease()
+})
+
+esp.loadPreset("Lead Synth")
+
+//esp.listPresets()
+
+//esp.downloadPresets()
